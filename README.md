@@ -1,9 +1,9 @@
 # DatingGame_Java
 
-Player:
-Main class: PlayerMain
+Player: </br>
+Main class: PlayerMain </br>
 receive a parameter: N
 
-Matchmaker:
-Main class: MatchmakerMain
+Matchmaker: </br>
+Main class: MatchmakerMain </br>
 receive a parameter: N
