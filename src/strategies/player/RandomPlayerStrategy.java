@@ -18,7 +18,7 @@ public class RandomPlayerStrategy extends PlayerStrategy {
 
 	@Override
 	public float[] getNextWeights() {
-		return origin;
+		return StrategyService.RandomModifyWeight(origin, attributeNo);
 	}
 
 }

@@ -206,9 +206,12 @@ public class StrategyService {
 		if(result[idx1] == origin[idx1]){ return origin; } 
 			
 		int idx2 = r.nextInt(attributeNo);
+		int count = 100;
 		while(result[idx2] == 0 || idx2 == idx1 || result[idx1]*result[idx2] < 0 
 				|| Math.abs(result[idx2]/5) < Math.abs(modifyValue)){ 
 			idx2 = r.nextInt(attributeNo); 
+			count--;
+			if(count < 0){ return origin; }
 		}
 			
 		if(!isAdd){
