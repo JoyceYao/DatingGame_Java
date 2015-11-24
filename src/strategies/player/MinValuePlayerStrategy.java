@@ -22,25 +22,15 @@ public class MinValuePlayerStrategy extends PlayerStrategy {
 		float positiveSum = 0;
 		float negativeSum = 0;
 		
-		//System.out.println("getInitialWeights countPositive=" +  countPositive);
-		//System.out.println("getInitialWeights posiValue=" +  posiValue);
-		//System.out.println("getInitialWeights countNegitive=" +  countNegitive);
-		//System.out.println("getInitialWeights negiValue=" +  negiValue);
-		
 		for(int i=0; i<countPositive; i++){
 			origin[i] = posiValue;
 			positiveSum += StrategyService.roundByTwoDigit(posiValue);
-			//StrategyService.printArray(origin);
 		}
-		
-		StrategyService.printArray(origin);
 		
 		for(int i=countPositive; i<attributeNo; i++){
 			origin[i] = negiValue;
 			negativeSum += StrategyService.roundByTwoDigit(negiValue);
 		}
-		
-		StrategyService.printArray(origin);
 		
 		float posiDiff = (float)1-positiveSum;
 		float negiDiff = ((float)1+negativeSum)*-1;

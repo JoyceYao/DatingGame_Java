@@ -18,10 +18,7 @@ public class LotsOfPositivePlayerStrategy extends PlayerStrategy {
 		StrategyService.printArray(origin);
 		
 		System.out.println("Valid check!" + StrategyService.isValidWeight(origin));
-		
-		//StrategyService.shuffleArray(origin);
-		
-		//StrategyService.printArray(origin);
+
 		return origin;
 	}
 

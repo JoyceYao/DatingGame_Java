@@ -10,36 +10,24 @@ public class StrategyService {
 	static Random r = new Random();
 	
 	public static boolean isValidWeight(float[] weight){
-		//System.out.println("isValidWeight[0]");
 		float positiveSum = 0;
 		float negativeSum = 0;
 		
 		for(int i=0; i<weight.length; i++){
 			if(weight[i] > 0){
 				positiveSum += roundByTwoDigit(weight[i]);
-				//System.out.println("positiveSum="+ positiveSum);
 			}else{
 				negativeSum += roundByTwoDigit(weight[i]);
-				//System.out.println("negativeSum="+ negativeSum);
 			}
 		}
-		
-		//System.out.println("isValidWeight positiveSum=" + positiveSum);
-		//System.out.println("isValidWeight negativeSum=" + negativeSum);
-		
+
 		if(roundByTwoDigit(positiveSum) != 1 || roundByTwoDigit(negativeSum) != -1){ return false; }
 		
-		//System.out.println("isValidWeight[2]");
 		return true;
 	}
 	
 	public static boolean isValidModifiedWeight(float[] original, float[] modified){
-		System.out.println("isValidModifiedWeight[0]");
-		
 		if(!isValidWeight(modified)){ return false; }
-		
-		System.out.println("isValidModifiedWeight[1]");
-		
 		List<Integer> changedIndex = new ArrayList<Integer>();
 		
 		for(int i=0; i<modified.length; i++){
@@ -48,12 +36,9 @@ public class StrategyService {
 			}
 		}
 		
-		
 		if((float)changedIndex.size()*100/modified.length > 5){
 			return false;
 		}
-		
-		System.out.println("isValidModifiedWeight[2]");
 		
 		for(int i=0; i<changedIndex.size(); i++){
 			int index = changedIndex.get(i);
@@ -62,9 +47,7 @@ public class StrategyService {
 				return false;
 			}
 		}
-		
-		System.out.println("isValidModifiedWeight[3]");
-		
+
 		return true;
 	}
 	
@@ -107,20 +90,7 @@ public class StrategyService {
 		System.out.print("getRandomWeight[0] result = ");
 		printArray(result);
 		shuffleArray(result);
-		
-		for(int i=0; i<50; i++){
-			int idx1 = r.nextInt(attributeNo);
-			int idx2 = r.nextInt(attributeNo);
-			float diff = StrategyService.roundByTwoDigit(r.nextFloat()/attributeNo);
-			// choose two position with the same sign, reduce diff from one position and add to the other position
-			if(result[idx1]*result[idx2] > 0){
-				if((result[idx1] > 0 && result[idx1]-diff > 0 && result[idx2]+diff <= 1)
-					|| (result[idx1] < 0 && result[idx1]-diff >= -1 && result[idx2]+diff <= 0)){
-					result[idx1] -= diff;
-					result[idx2] += diff;
-				}
-			}
-		}
+		randomlyMutate(result);
 		
 		System.out.print("getRandomWeight[1] result = ");
 		printArray(result);
@@ -169,22 +139,10 @@ public class StrategyService {
 		//printArray(result);
 		shuffleArray(result);
 		
-		for(int i=0; i<50; i++){
-			int idx1 = r.nextInt(attributeNo);
-			int idx2 = r.nextInt(attributeNo);
-			float diff = StrategyService.roundByTwoDigit(r.nextFloat()/attributeNo);
-			// choose two position with the same sign, reduce diff from one position and add to the other position
-			if(result[idx1]*result[idx2] > 0){
-				if((result[idx1] > 0 && result[idx1]-diff > 0 && result[idx2]+diff <= 1)
-					|| (result[idx1] < 0 && result[idx1]-diff >= -1 && result[idx2]+diff <= 0)){
-					result[idx1] -= diff;
-					result[idx2] += diff;
-				}
-			}
-		}
+		randomlyMutate(result);
 		
-		//System.out.print("getRandomWeight[1] result = ");
-		//printArray(result);
+		System.out.print("getNonZeroRandomWeight[1] result = ");
+		printArray(result);
 		return result;
 	}
 	
@@ -204,25 +162,8 @@ public class StrategyService {
 			result[i] = neg;
 		}
 		
-		//System.out.print("getRandomWeight[0] result = ");
-		//printArray(result);
 		shuffleArray(result);
-		
-		for(int i=0; i<50; i++){
-			int idx1 = r.nextInt(attributeNo);
-			int idx2 = r.nextInt(attributeNo);
-			float diff = r.nextFloat()/attributeNo;
-			// choose two position with the same sign, reduce diff from one position and add to the other position
-			if(result[idx1]*result[idx2] > 0){
-				if((result[idx1] > 0 && result[idx1]-diff > 0 && result[idx2]+diff <= 1)
-					|| (result[idx1] < 0 && result[idx1]-diff >= -1 && result[idx2]+diff <= 0)){
-					//if(roundByTwoDigit(result[idx1]-diff) == roundByTwoDigit(result[idx1])){ continue; }
-					result[idx1] -= diff;
-					result[idx2] += diff;
-				}
-			}
-		}
-		
+		randomlyMutate(result);
 		printArray(result);
 		
 		for(int i=0; i<attributeNo; i++){
@@ -230,33 +171,7 @@ public class StrategyService {
 		}
 		
 		printArray(result);
-		
-		float positiveSum = 0;
-		float negativeSum = 0;
-		for(int i=0; i<attributeNo; i++){
-			if(result[i] > 0){ positiveSum += result[i]; }
-			else{ negativeSum += result[i]; }
-		}
-		
-		// add left over number to make sure the sum is 1 and -1
-		float diffPositive = roundByTwoDigit((float)1-positiveSum);
-		float diffNegative = roundByTwoDigit(((float)1+negativeSum)*-1);
-		
-		System.out.println("getMostPositiveRandomWeight isValid[0]=" + isValidWeight(result));
-		
-		for(int i=0; i<attributeNo; i++){
-			if(result[i] > 0 && result[i] + diffPositive <= 1){
-				result[i] += diffPositive;
-				break;
-			}
-		}
-		
-		for(int i=0; i<attributeNo; i++){
-			if(result[i] < 0 && result[i] + diffNegative >= -1){
-				result[i] += diffNegative;
-				break;
-			}
-		}
+		fillIntoOne(result);
 		
 		System.out.println("getMostPositiveRandomWeight isValid[1]=" + isValidWeight(result));
 
@@ -276,7 +191,6 @@ public class StrategyService {
 		int modifyNo = (int)Math.floor((double)attributeNo*0.05);
 		if(modifyNo < 2){ return origin; }
 		
-		
 		float[] result = Arrays.copyOf(origin, origin.length);
 		int idx1 = r.nextInt(attributeNo);
 		while(result[idx1] == 0){ idx1 = r.nextInt(attributeNo); }
@@ -292,7 +206,8 @@ public class StrategyService {
 		if(result[idx1] == origin[idx1]){ return origin; } 
 			
 		int idx2 = r.nextInt(attributeNo);
-		while(result[idx2] == 0 || idx2 == idx1 || result[idx1]*result[idx2] < 0 || result[idx2]/5 < modifyValue){ 
+		while(result[idx2] == 0 || idx2 == idx1 || result[idx1]*result[idx2] < 0 
+				|| Math.abs(result[idx2]/5) < Math.abs(modifyValue)){ 
 			idx2 = r.nextInt(attributeNo); 
 		}
 			
@@ -303,6 +218,7 @@ public class StrategyService {
 		}
 		
 		if(isValidModifiedWeight(origin, result)){
+			System.out.println("Modify Finished!");
 			return result;
 		}else{
 			System.out.println("Problems in modify logic!!!");
@@ -325,5 +241,59 @@ public class StrategyService {
 			System.out.print(f + " ");
 		}
 		System.out.println();
+	}
+	
+	// check whether the input array is add into 1 and -1
+	// if not, add to 1 and -1
+	// this will change the array directly
+	private static void fillIntoOne(float[] input){
+		
+		float positiveSum = 0;
+		float negativeSum = 0;
+		for(int i=0; i<input.length; i++){
+			if(input[i] > 0){ positiveSum += input[i]; }
+			else{ negativeSum += input[i]; }
+		}
+		
+		// add left over number to make sure the sum is 1 and -1
+		float diffPositive = roundByTwoDigit((float)1-positiveSum);
+		float diffNegative = roundByTwoDigit(((float)1+negativeSum)*-1);
+		
+		System.out.println("getMostPositiveRandomWeight isValid[0]=" + isValidWeight(input));
+		
+		for(int i=0; i<input.length; i++){
+			if(input[i] > 0 && input[i] + diffPositive <= 1){
+				input[i] += diffPositive;
+				break;
+			}
+		}
+		
+		for(int i=0; i<input.length; i++){
+			if(input[i] < 0 && input[i] + diffNegative >= -1){
+				input[i] += diffNegative;
+				break;
+			}
+		}
+	}
+	
+	// randomly change some value in the array
+	// will modify the input array
+	// will try to keep the "add to one" rule, but won't guarantee
+	private static void randomlyMutate(float[] input){
+		int attributeNo = input.length;
+		for(int i=0; i<50; i++){
+			int idx1 = r.nextInt(attributeNo);
+			int idx2 = r.nextInt(attributeNo);
+			float diff = r.nextFloat()/attributeNo;
+			// choose two position with the same sign, reduce diff from one position and add to the other position
+			if(input[idx1]*input[idx2] > 0){
+				if((input[idx1] > 0 && input[idx1]-diff > 0 && input[idx2]+diff <= 1)
+					|| (input[idx1] < 0 && input[idx1]-diff >= -1 && input[idx2]+diff <= 0)){
+					//if(roundByTwoDigit(result[idx1]-diff) == roundByTwoDigit(result[idx1])){ continue; }
+					input[idx1] -= diff;
+					input[idx2] += diff;
+				}
+			}
+		}
 	}
 }
